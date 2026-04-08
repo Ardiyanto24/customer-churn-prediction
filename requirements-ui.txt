@@ -1,0 +1,11 @@
+# =============================================================================
+# UI Requirements
+# =============================================================================
+# Library khusus untuk service Streamlit (Frontend/Dashboard).
+# Base requirements di-include agar library ML seperti 'shap' tersedia
+# untuk menampilkan visualisasi XAI (Explainable AI) lokal di halaman analytics.
+
+-r requirements-base.txt
+
+streamlit>=1.32
+httpx>=0.27

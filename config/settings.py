@@ -90,3 +90,27 @@ XAI_TOP_N_FEATURES = 10
 # Ambang batas minimal proporsi overlap (0.5 berarti minimal 50%)
 # Contoh: Minimal 3 dari 5 expected features harus masuk ke dalam top-10 SHAP.
 XAI_MIN_OVERLAP = 0.5
+
+# =============================================================================
+# PATH AND ARTIFACT CONSTANTS
+# =============================================================================
+# Menggunakan pathlib untuk memastikan path kompatibel di Windows, Mac, dan Linux.
+
+# Path absolut ke root project (dua level naik dari config/settings.py)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+# Direktori Data
+DATA_RAW_DIR = PROJECT_ROOT / "data" / "raw"
+DATA_PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
+DATA_SPLITS_DIR = PROJECT_ROOT / "data" / "splits"
+
+# Direktori Model
+MODELS_DIR = PROJECT_ROOT / "models" / "artifacts"
+
+# Path ke file artifact model dan preprocessor
+# Mencoba membaca dari environment variable, jika kosong gunakan default
+MODEL_PATH = Path(os.getenv("MODEL_PATH", str(MODELS_DIR / "model_final.joblib")))
+PREPROCESSOR_PATH = Path(os.getenv("PREPROCESSOR_PATH", str(MODELS_DIR / "preprocessor.joblib")))
+
+# Path internal untuk base model (tidak dikonfigurasi via .env)
+BASE_MODEL_PATH = MODELS_DIR / "base_model.joblib"

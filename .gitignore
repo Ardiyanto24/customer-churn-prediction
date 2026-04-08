@@ -1,0 +1,60 @@
+# =============================================================================
+# Substep 2.1 — .gitignore Configuration
+# =============================================================================
+
+# --- Environment dan secrets ---
+.env
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+.python-version
+
+# --- Data ---
+# Abaikan semua file di dalam folder data, tapi tetap track .gitkeep
+data/raw/*
+!data/raw/.gitkeep
+
+data/processed/*
+!data/processed/.gitkeep
+
+data/splits/*
+!data/splits/.gitkeep
+
+# Pola khusus untuk mengecualikan file data (.csv)
+*.csv
+
+# --- Model artifacts ---
+# Abaikan semua isi di models/artifacts/ kecuali .gitkeep
+models/artifacts/*
+!models/artifacts/.gitkeep
+
+# Pola khusus untuk file model
+*.joblib
+*.pkl
+
+# --- Reports ---
+reports/eda_report.html
+reports/*.html
+
+# Abaikan semua isi di reports/xai_report/ kecuali .gitkeep
+reports/xai_report/*
+!reports/xai_report/.gitkeep
+
+# --- IDE dan OS ---
+.DS_Store
+.idea/
+.vscode/
+Thumbs.db
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+
+# --- WandB ---
+wandb/

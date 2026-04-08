@@ -1,0 +1,7 @@
+# =============================================================================
+# Main Requirements (Convenience File for Local Development)
+# =============================================================================
+# Mengarahkan instalasi ke environment development secara keseluruhan.
+# Cukup jalankan: pip install -r requirements.txt
+
+-r requirements-dev.txt

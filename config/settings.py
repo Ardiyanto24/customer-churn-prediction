@@ -66,3 +66,27 @@ RANDOM_SEED = 42
 # Proporsi pembagian dataset
 TEST_SIZE = 0.15   # 15% untuk test set dari total data
 VAL_SIZE = 0.15    # 15% untuk validation set dari sisa training data
+
+# =============================================================================
+# XAI QUALITY GATE CONSTANTS
+# =============================================================================
+# Konstanta ini mendefinisikan kriteria untuk memutuskan apakah sebuah model 
+# layak (pass) untuk dilanjutkan ke tahap berikutnya berdasarkan analisis SHAP.
+
+# Fitur yang diharapkan masuk ke jajaran top features berdasarkan domain knowledge.
+# List ini berasal dari hasil EDA Fase 6 (EarlyWarningCompiler) yang merupakan 
+# fitur dengan bukti kuantitatif terkuat terhadap churn.
+EXPECTED_IMPORTANT_FEATURES = [
+    "Contract", 
+    "tenure", 
+    "MonthlyCharges", 
+    "TotalCharges", 
+    "InternetService"
+]
+
+# Jumlah fitur teratas yang dievaluasi dari SHAP feature importance
+XAI_TOP_N_FEATURES = 10
+
+# Ambang batas minimal proporsi overlap (0.5 berarti minimal 50%)
+# Contoh: Minimal 3 dari 5 expected features harus masuk ke dalam top-10 SHAP.
+XAI_MIN_OVERLAP = 0.5

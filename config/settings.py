@@ -114,3 +114,21 @@ PREPROCESSOR_PATH = Path(os.getenv("PREPROCESSOR_PATH", str(MODELS_DIR / "prepro
 
 # Path internal untuk base model (tidak dikonfigurasi via .env)
 BASE_MODEL_PATH = MODELS_DIR / "base_model.joblib"
+
+# =============================================================================
+# WANDB AND API CONSTANTS
+# =============================================================================
+
+# Konfigurasi Weights & Biases (WandB)
+# WANDB_PROJECT: Nama project di WandB (default: "customer-churn-prediction")
+WANDB_PROJECT = os.getenv("WANDB_PROJECT", "customer-churn-prediction")
+
+# WANDB_ENTITY: Username atau nama team di WandB (bisa None)
+WANDB_ENTITY = os.getenv("WANDB_ENTITY")
+
+# Nama Artifact WandB
+# Nama-nama ini harus digunakan secara konsisten di seluruh pipeline 
+# untuk meregistrasi (log) dan mengambil (download) artifact.
+MODEL_ARTIFACT_NAME = "churn-model"
+BASE_MODEL_ARTIFACT_NAME = "churn-base-model"
+PREPROCESSOR_ARTIFACT_NAME = "churn-preprocessor"

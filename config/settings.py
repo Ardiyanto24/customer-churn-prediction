@@ -132,3 +132,20 @@ WANDB_ENTITY = os.getenv("WANDB_ENTITY")
 MODEL_ARTIFACT_NAME = "churn-model"
 BASE_MODEL_ARTIFACT_NAME = "churn-base-model"
 PREPROCESSOR_ARTIFACT_NAME = "churn-preprocessor"
+
+# =============================================================================
+# API SERVER CONSTANTS
+# =============================================================================
+# Konfigurasi server untuk FastAPI dan Streamlit.
+
+# Host dan Port untuk menjalankan API (FastAPI)
+API_HOST = os.getenv("API_HOST", "0.0.0.0")
+
+# os.getenv selalu mengembalikan string, jadi kita pastikan casting ke int
+API_PORT = int(os.getenv("API_PORT", "8000"))
+
+# Base URL untuk Endpoint API
+# Saat dijalankan lokal, defaultnya adalah http://0.0.0.0:8000.
+# Saat di-deploy ke Hugging Face, variabel API_BASE_URL di environment Space UI 
+# akan di-override dengan URL publik Space API agar Streamlit bisa mengirim request.
+API_BASE_URL = os.getenv("API_BASE_URL", f"http://{API_HOST}:{API_PORT}")

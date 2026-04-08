@@ -55,3 +55,14 @@ ADDON_COLS = [
 # Structural Values (Not Missing Values)
 NO_INTERNET_VALUE = "No internet service"
 NO_PHONE_VALUE = "No phone service"
+
+# =============================================================================
+# SPLIT AND REPRODUCIBILITY CONSTANTS
+# =============================================================================
+
+# Seed yang digunakan untuk semua operasi random agar hasil konsisten
+RANDOM_SEED = 42
+
+# Proporsi pembagian dataset
+TEST_SIZE = 0.15   # 15% untuk test set dari total data
+VAL_SIZE = 0.15    # 15% untuk validation set dari sisa training data

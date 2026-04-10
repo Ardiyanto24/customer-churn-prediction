@@ -1,0 +1,27 @@
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | venv
+  | env
+  | __pycache__
+  | notebooks
+  | data
+  | models
+  | reports
+  | wandb
+  | logs
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+skip_glob = [
+    "notebooks/*",
+    "data/*",
+    "models/*",
+]

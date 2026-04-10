@@ -58,3 +58,21 @@ htmlcov/
 
 # --- WandB ---
 wandb/
+
+# --- Logs ---
+logs/
+
+# --- HF Spaces staging ---
+# Folder ini hanya untuk staging sebelum push ke HF — tidak perlu di-commit ke GitHub
+hf_spaces/
+
+# --- Claude Code ---
+# Exclude local cache dan history yang di-generate Claude Code
+.claude/cache/
+.claude/history/
+.claude/*.log
+
+# Explicitly track config files yang perlu di-commit
+!.claude/settings.json
+!.claude/commands/
+!.claude/hooks/

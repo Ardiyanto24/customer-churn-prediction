@@ -16,15 +16,22 @@ CHURN_POSITIVE_LABEL = "Yes"
 CHURN_NEGATIVE_LABEL = "No"
 
 # Numeric Columns
-NUMERIC_COLS = [
+NUMERIC_COLS_RAW = [
     "tenure", 
     "MonthlyCharges", 
     "TotalCharges"
 ]
 
+NUMERIC_COLS_PROCESSED = [
+    "tenure", 
+    "MonthlyCharges", 
+    "tc_residual", 
+    "monthly_to_total_ratio"
+]
+
 # Categorical Columns (Excluding Target)
 CATEGORICAL_COLS = [
-    "gender", 
+    "gender",  # di-drop oleh preprocessor, tidak masuk ke model — diterima API untuk kompatibilitas dengan raw data schema
     "SeniorCitizen", 
     "Partner", 
     "Dependents", 
@@ -53,6 +60,8 @@ ADDON_COLS = [
 ]
 
 # Structural Values (Not Missing Values)
+# Kedua nilai ini bukan missing value — mereka adalah nilai struktural 
+# yang muncul karena dependency antar kolom.
 NO_INTERNET_VALUE = "No internet service"
 NO_PHONE_VALUE = "No phone service"
 

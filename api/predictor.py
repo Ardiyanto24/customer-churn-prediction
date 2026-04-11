@@ -1,5 +1,6 @@
 # api/predictor.py
 
+import sys
 import time
 import shap
 import pandas as pd
@@ -26,14 +27,19 @@ class ModelPredictor:
         self._model_version: str = "unknown"
         self._is_ready: bool = False
 
-    def load_artifacts(
-        self, model_path: Union[str, Path], preprocessor_path: Union[str, Path]
-    ) -> bool:
+    def load_artifacts(self, model_path: Union[str, Path], preprocessor_path: Union[str, Path]) -> bool:
         """
         Memuat model dan preprocessor ke dalam memori.
         Jika gagal, aplikasi tidak crash (degraded mode).
         """
         try:
+            # HACK: Menjembatani custom class dari Jupyter Notebook ke environment API
+            try:
+                from src.preprocessing.pipeline import PreprocessingPipeline
+                sys.modules['__main__'].PreprocessingPipeline = PreprocessingPipeline
+            except ImportError:
+                pass  # Abaikan jika struktur file berbeda
+
             # Menggunakan utilitas yang kita buat di Step 1
             self._preprocessor = load_artifact(preprocessor_path, logger)
             self._model = load_artifact(model_path, logger)
@@ -42,12 +48,14 @@ class ModelPredictor:
             self._model_version = Path(model_path).name
             self._is_ready = True
 
-            logger.info("✅ Semua artifact berhasil dimuat. Predictor siap digunakan.")
+            # Emoji dihapus agar terminal Windows tidak crash
+            logger.info("SUKSES: Semua artifact berhasil dimuat. Predictor siap digunakan.")
             return True
 
         except Exception as e:
             self._is_ready = False
-            logger.error(f"❌ Gagal memuat artifact. API berjalan dalam degraded mode. Error: {e}")
+            # Emoji dihapus agar terminal Windows tidak crash
+            logger.error(f"GAGAL: Tidak dapat memuat artifact. API berjalan dalam degraded mode. Error: {e}")
             return False
 
     def _prepare_dataframe(self, inputs: Union[CustomerInput, List[CustomerInput]]) -> pd.DataFrame:

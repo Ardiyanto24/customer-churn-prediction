@@ -28,6 +28,7 @@ _start_time = time.time()
 
 
 @asynccontextmanager
+@asynccontextmanager
 async def lifespan(app: FastAPI):
     """
     Lifespan event handler untuk mengelola state saat aplikasi mulai (startup) dan berhenti (shutdown).
@@ -36,19 +37,19 @@ async def lifespan(app: FastAPI):
 
     # Memuat model dan preprocessor HANYA SATU KALI saat API menyala
     success = predictor.load_artifacts(
-        model_path=settings.MODEL_PATH, preprocessor_path=settings.PREPROCESSOR_PATH
+        model_path=settings.MODEL_PATH, 
+        preprocessor_path=settings.PREPROCESSOR_PATH
     )
 
     if success:
-        logger.info("✅ Artifacts berhasil dimuat. API siap melayani prediksi.")
+        logger.info("SUKSES: Artifacts berhasil dimuat. API siap melayani prediksi.")
     else:
-        logger.error("❌ Gagal memuat artifacts! API berjalan dalam mode degraded.")
+        logger.error("GAGAL: Tidak dapat memuat artifacts! API berjalan dalam mode degraded.")
 
     yield  # Pada titik ini aplikasi sedang berjalan melayani request
 
     # Dijalankan saat aplikasi menerima sinyal untuk berhenti
     logger.info("Aplikasi sedang shutdown. Membersihkan resources...")
-
 
 # Inisialisasi instance aplikasi FastAPI
 app = FastAPI(

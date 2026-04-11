@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.utils.logger import get_logger
 from api.predictor import predictor
+from api.schemas import HealthResponse
 from config import settings
 
 # Inisialisasi logger terpusat
@@ -69,4 +70,22 @@ async def global_exception_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=500,
         content={"status": "error", "message": "Internal server error"}
+    )
+
+
+@app.get("/health", response_model=HealthResponse)
+async def health_check():
+    """
+    Endpoint untuk mengecek status kesehatan API dan kesiapan model.
+    Akan mengembalikan status HTTP 200 OK meskipun dalam mode degraded,
+    agar load balancer tahu bahwa server/aplikasi utama tetap hidup.
+    """
+    is_ready = predictor._is_ready
+
+    return HealthResponse(
+        status="healthy" if is_ready else "degraded",
+        model_loaded=predictor._model is not None,
+        preprocessor_loaded=predictor._preprocessor is not None,
+        model_version=predictor._model_version,
+        uptime_seconds=time.time() - _start_time
     )

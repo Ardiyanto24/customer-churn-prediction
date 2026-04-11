@@ -10,9 +10,12 @@ class CustomerInput(BaseModel):
     Catatan: Kolom 'id' sengaja tidak disertakan di sini karena di-drop sebelum masuk preprocessing,
     dan kolom 'Churn' (target) tentu tidak ada saat inference.
     """
+
     # Demografi
     gender: Literal["Male", "Female"]
-    SeniorCitizen: int = Field(ge=0, le=1, description="1 jika pelanggan adalah lansia, 0 jika tidak")
+    SeniorCitizen: int = Field(
+        ge=0, le=1, description="1 jika pelanggan adalah lansia, 0 jika tidak"
+    )
     Partner: Literal["Yes", "No"]
     Dependents: Literal["Yes", "No"]
 
@@ -34,10 +37,7 @@ class CustomerInput(BaseModel):
     Contract: Literal["Month-to-month", "One year", "Two year"]
     PaperlessBilling: Literal["Yes", "No"]
     PaymentMethod: Literal[
-        "Electronic check", 
-        "Mailed check", 
-        "Bank transfer (automatic)", 
-        "Credit card (automatic)"
+        "Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"
     ]
     MonthlyCharges: float = Field(ge=0.0, description="Tagihan bulanan dalam USD")
     TotalCharges: float = Field(ge=0.0, description="Total tagihan selama berlangganan")
@@ -64,7 +64,7 @@ class CustomerInput(BaseModel):
                 "PaperlessBilling": "Yes",
                 "PaymentMethod": "Electronic check",
                 "MonthlyCharges": 85.50,
-                "TotalCharges": 171.00
+                "TotalCharges": 171.00,
             }
         }
     }
@@ -72,6 +72,7 @@ class CustomerInput(BaseModel):
 
 class PredictionResult(BaseModel):
     """Hasil prediksi untuk satu pelanggan."""
+
     churn_prediction: bool
     churn_probability: float = Field(ge=0.0, le=1.0, description="Probabilitas churn (0.0 - 1.0)")
     risk_level: str = Field(description="'high' (>= 0.7), 'medium' (>= 0.4), atau 'low' (< 0.4)")
@@ -80,6 +81,7 @@ class PredictionResult(BaseModel):
 
 class PredictionResponse(BaseModel):
     """Response untuk endpoint prediksi tunggal (/predict)."""
+
     status: str = "success"
     model_version: str
     result: PredictionResult
@@ -87,12 +89,14 @@ class PredictionResponse(BaseModel):
 
 class BatchPredictionItem(BaseModel):
     """Representasi satu item hasil dalam prediksi massal."""
+
     index: int
     result: PredictionResult
 
 
 class BatchPredictionResponse(BaseModel):
     """Response untuk endpoint prediksi massal (/predict/batch)."""
+
     status: str = "success"
     model_version: str
     total_input: int
@@ -102,7 +106,10 @@ class BatchPredictionResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     """Response untuk endpoint health check (/health)."""
-    status: str = Field(description="'healthy' jika semua artifact dimuat, 'degraded' jika ada yang gagal")
+
+    status: str = Field(
+        description="'healthy' jika semua artifact dimuat, 'degraded' jika ada yang gagal"
+    )
     model_loaded: bool
     preprocessor_loaded: bool
     model_version: str

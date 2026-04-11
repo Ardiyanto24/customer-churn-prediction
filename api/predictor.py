@@ -19,13 +19,16 @@ class ModelPredictor:
     Singleton class untuk mengelola state model dan preprocessor,
     serta menangani logika inference.
     """
+
     def __init__(self):
         self._model: Any = None
         self._preprocessor: Any = None
         self._model_version: str = "unknown"
         self._is_ready: bool = False
 
-    def load_artifacts(self, model_path: Union[str, Path], preprocessor_path: Union[str, Path]) -> bool:
+    def load_artifacts(
+        self, model_path: Union[str, Path], preprocessor_path: Union[str, Path]
+    ) -> bool:
         """
         Memuat model dan preprocessor ke dalam memori.
         Jika gagal, aplikasi tidak crash (degraded mode).
@@ -84,11 +87,13 @@ def predict(self, input_data: CustomerInput) -> PredictionResult:
 
     # 3. Dapatkan probabilitas dari model
     proba_array = self._model.predict_proba(X_transformed)
-    churn_probability = float(proba_array[0][1])  # Index 1 adalah probabilitas kelas positif (Churn=Yes)
-    
+    churn_probability = float(
+        proba_array[0][1]
+    )  # Index 1 adalah probabilitas kelas positif (Churn=Yes)
+
     # 4. Tentukan hasil prediksi dan level risiko
     churn_prediction = bool(churn_probability >= 0.5)
-    
+
     if churn_probability >= 0.7:
         risk_level = "high"
     elif churn_probability >= 0.4:
@@ -97,13 +102,15 @@ def predict(self, input_data: CustomerInput) -> PredictionResult:
         risk_level = "low"
 
     # 5. Logging aman (tanpa PII/data sensitif)
-    logger.info(f"Single predict | Probability: {churn_probability:.4f} | Risk: {risk_level} | Churn: {churn_prediction}")
+    logger.info(
+        f"Single predict | Probability: {churn_probability:.4f} | Risk: {risk_level} | Churn: {churn_prediction}"
+    )
 
     return PredictionResult(
         churn_prediction=churn_prediction,
         churn_probability=round(churn_probability, 4),
         risk_level=risk_level,
-        shap_values=None  # SHAP akan diisi oleh fungsi terpisah jika diminta
+        shap_values=None,  # SHAP akan diisi oleh fungsi terpisah jika diminta
     )
 
 
@@ -143,15 +150,19 @@ def predict_batch(self, inputs: List[CustomerInput]) -> List[PredictionResult]:
         if pred:
             churn_count += 1
 
-        results.append(PredictionResult(
-            churn_prediction=pred,
-            churn_probability=round(churn_prob, 4),
-            risk_level=risk,
-            shap_values=None
-        ))
+        results.append(
+            PredictionResult(
+                churn_prediction=pred,
+                churn_probability=round(churn_prob, 4),
+                risk_level=risk,
+                shap_values=None,
+            )
+        )
 
     exec_time_ms = (time.time() - start_time) * 1000
-    logger.info(f"Batch predict | Total Input: {len(inputs)} | Predicted Churn: {churn_count} | Time: {exec_time_ms:.2f} ms")
+    logger.info(
+        f"Batch predict | Total Input: {len(inputs)} | Predicted Churn: {churn_count} | Time: {exec_time_ms:.2f} ms"
+    )
 
     return results
 

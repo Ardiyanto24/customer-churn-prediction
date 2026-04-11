@@ -230,3 +230,32 @@ async def predict_batch_csv(file: UploadFile = File(...)):
     except Exception as e:
         logger.error(f"Error pada batch prediction CSV: {e}")
         return JSONResponse(status_code=500, content={"status": "error", "message": f"Gagal memproses file CSV: {str(e)}"})
+
+
+@app.get("/", tags=["General"], summary="Welcome Endpoint")
+async def root():
+    """
+    Welcome endpoint. Memberikan informasi dasar tentang API dan navigasi ke dokumentasi.
+    """
+    return JSONResponse(
+        content={
+            "name": "TCCP Churn Prediction API",
+            "version": "1.0.0",
+            "message": "Welcome to the Telco Customer Churn Prediction REST API.",
+            "docs": "/docs",
+            "health": "/health"
+        }
+    )
+
+if __name__ == "__main__":
+    import uvicorn
+
+    # Catatan: Untuk development dengan hot reload, gunakan perintah dari terminal:
+    # uvicorn api.main:app --reload
+
+    uvicorn.run(
+        app="api.main:app",
+        host=settings.API_HOST,
+        port=settings.API_PORT,
+        reload=False
+    )

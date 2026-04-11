@@ -1,10 +1,13 @@
+# api/predictor.py
+
+import time
 import pandas as pd
 from pathlib import Path
 from typing import List, Union, Any
 
 from src.utils.logger import get_logger
 from src.utils.serialization import load_artifact
-from api.schemas import CustomerInput
+from api.schemas import CustomerInput, PredictionResult
 
 # Inisialisasi logger terpusat
 logger = get_logger("api.predictor")
@@ -63,3 +66,90 @@ class ModelPredictor:
 
 # Inisiasi instance tunggal (singleton) untuk digunakan di router FastAPI nanti
 predictor = ModelPredictor()
+
+
+def predict(self, input_data: CustomerInput) -> PredictionResult:
+        """
+        Menjalankan prediksi untuk satu data pelanggan.
+        """
+        if not self._is_ready:
+            raise RuntimeError("Model dan preprocessor belum siap. Pastikan artifact sudah di-load.")
+
+        # 1. Konversi ke DataFrame
+        df = self._prepare_dataframe(input_data)
+
+        # 2. Preprocessing (HANYA transform, TIDAK BOLEH fit_transform)
+        X_transformed = self._preprocessor.transform(df)
+
+        # 3. Dapatkan probabilitas dari model
+        proba_array = self._model.predict_proba(X_transformed)
+        churn_probability = float(proba_array[0][1])  # Index 1 adalah probabilitas kelas positif (Churn=Yes)
+        
+        # 4. Tentukan hasil prediksi dan level risiko
+        churn_prediction = bool(churn_probability >= 0.5)
+        
+        if churn_probability >= 0.7:
+            risk_level = "high"
+        elif churn_probability >= 0.4:
+            risk_level = "medium"
+        else:
+            risk_level = "low"
+
+        # 5. Logging aman (tanpa PII/data sensitif)
+        logger.info(f"Single predict | Probability: {churn_probability:.4f} | Risk: {risk_level} | Churn: {churn_prediction}")
+
+        return PredictionResult(
+            churn_prediction=churn_prediction,
+            churn_probability=round(churn_probability, 4),
+            risk_level=risk_level,
+            shap_values=None  # SHAP akan diisi oleh fungsi terpisah jika diminta
+        )
+
+
+def predict_batch(self, inputs: List[CustomerInput]) -> List[PredictionResult]:
+    """
+    Menjalankan prediksi untuk banyak data pelanggan sekaligus (dioptimasi).
+    """
+    if not self._is_ready:
+        raise RuntimeError("Model dan preprocessor belum siap. Pastikan artifact sudah di-load.")
+
+    start_time = time.time()
+
+    # 1. Konversi seluruh input menjadi satu DataFrame
+    df = self._prepare_dataframe(inputs)
+
+    # 2. Preprocessing sekaligus
+    X_transformed = self._preprocessor.transform(df)
+
+    # 3. Prediksi sekaligus
+    proba_array = self._model.predict_proba(X_transformed)
+
+    results = []
+    churn_count = 0
+
+    # 4. Parsing hasil ke dalam bentuk list of PredictionResult
+    for proba in proba_array:
+        churn_prob = float(proba[1])
+        pred = bool(churn_prob >= 0.5)
+
+        if churn_prob >= 0.7:
+            risk = "high"
+        elif churn_prob >= 0.4:
+            risk = "medium"
+        else:
+            risk = "low"
+
+        if pred:
+            churn_count += 1
+
+        results.append(PredictionResult(
+            churn_prediction=pred,
+            churn_probability=round(churn_prob, 4),
+            risk_level=risk,
+            shap_values=None
+        ))
+
+    exec_time_ms = (time.time() - start_time) * 1000
+    logger.info(f"Batch predict | Total Input: {len(inputs)} | Predicted Churn: {churn_count} | Time: {exec_time_ms:.2f} ms")
+
+    return results

@@ -1,7 +1,7 @@
 # api/schemas.py
 
 from pydantic import BaseModel, Field
-from typing import Literal
+from typing import Literal, Optional, Dict, List
 
 
 class CustomerInput(BaseModel):
@@ -68,3 +68,42 @@ class CustomerInput(BaseModel):
             }
         }
     }
+
+
+class PredictionResult(BaseModel):
+    """Hasil prediksi untuk satu pelanggan."""
+    churn_prediction: bool
+    churn_probability: float = Field(ge=0.0, le=1.0, description="Probabilitas churn (0.0 - 1.0)")
+    risk_level: str = Field(description="'high' (>= 0.7), 'medium' (>= 0.4), atau 'low' (< 0.4)")
+    shap_values: Optional[Dict[str, float]] = None
+
+
+class PredictionResponse(BaseModel):
+    """Response untuk endpoint prediksi tunggal (/predict)."""
+    status: str = "success"
+    model_version: str
+    result: PredictionResult
+
+
+class BatchPredictionItem(BaseModel):
+    """Representasi satu item hasil dalam prediksi massal."""
+    index: int
+    result: PredictionResult
+
+
+class BatchPredictionResponse(BaseModel):
+    """Response untuk endpoint prediksi massal (/predict/batch)."""
+    status: str = "success"
+    model_version: str
+    total_input: int
+    total_predicted: int
+    results: List[BatchPredictionItem]
+
+
+class HealthResponse(BaseModel):
+    """Response untuk endpoint health check (/health)."""
+    status: str = Field(description="'healthy' jika semua artifact dimuat, 'degraded' jika ada yang gagal")
+    model_loaded: bool
+    preprocessor_loaded: bool
+    model_version: str
+    uptime_seconds: float

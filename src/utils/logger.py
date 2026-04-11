@@ -24,8 +24,7 @@ def get_logger(name: str) -> logging.Logger:
 
     # Membuat format log terstruktur: ISO 8601 Timestamp | LEVEL | logger_name | message
     formatter = logging.Formatter(
-        fmt="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
-        datefmt="%Y-%m-%dT%H:%M:%S"
+        fmt="%(asctime)s | %(levelname)s | %(name)s | %(message)s", datefmt="%Y-%m-%dT%H:%M:%S"
     )
 
     # 1. Handler untuk Console (stdout)

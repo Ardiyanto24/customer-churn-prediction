@@ -21,7 +21,7 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 |---|---|---|
 | DEV-01 | 4 steps | ✅ Complete (manual) |
 | DEV-02 | 4 steps | ✅ Complete (manual) |
-| DEV-03 | 5 steps | ⬜ Not started |
+| DEV-03 | 5 steps | ✅ Complete |
 | DEV-04 | 5 steps | ⬜ Not started |
 | DEV-05 | 3 steps | ⬜ Not started |
 | DEV-06 | 5 steps | ⬜ Not started |
@@ -129,10 +129,10 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 - [x] Task 4.2.2 — batch_prediction.py: results table with color highlight and download
 
 ### Step 5 — Analytics Page
-- [ ] Task 5.1.1 — analytics.py: model status section
-- [ ] Task 5.2.1 — analytics.py: XAI visualizations with tabs (SHAP, Permutation, Built-in)
-- [ ] Task 5.2.2 — analytics.py: SHAP force plot expander
-- [ ] Task 5.3.1 — analytics.py: batch distribution charts from session state
+- [x] Task 5.1.1 — analytics.py: model status section
+- [x] Task 5.2.1 — analytics.py: XAI visualizations with tabs (SHAP, Permutation, Built-in)
+- [x] Task 5.2.2 — analytics.py: SHAP force plot expander
+- [x] Task 5.3.1 — analytics.py: batch distribution charts from session state
 
 > Verification tasks (Step 6) are run manually — not tracked here.
 

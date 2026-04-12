@@ -112,9 +112,9 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 - [x] Task 1.3.1 — shap_chart.py: render_shap_bar_chart component
 
 ### Step 2 — Entry Point
-- [ ] Task 2.1.1 — app/main.py: st.set_page_config
-- [ ] Task 2.1.2 — app/main.py: sidebar with navigation and API status
-- [ ] Task 2.1.3 — app/main.py: home page content
+- [x] Task 2.1.1 — app/main.py: st.set_page_config
+- [x] Task 2.1.2 — app/main.py: sidebar with navigation and API status
+- [x] Task 2.1.3 — app/main.py: home page content
 
 ### Step 3 — Single Prediction Page
 - [ ] Task 3.1.1 — prediction.py: page config and st.form setup

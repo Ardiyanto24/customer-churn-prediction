@@ -37,11 +37,19 @@ class ModelPredictor:
         try:
             # HACK: Menjembatani custom class dari Jupyter Notebook ke environment API
             try:
-                from src.preprocessing.pipeline import PreprocessingPipeline
+                from src.preprocessing.pipeline import PreprocessingPipeline, ScalerWrapper
+                from src.preprocessing.encoders import StructuralEncoder, BinaryEncoder, OHEWrapper
+                from src.preprocessing.feature_engineering import FeatureEngineer, ColumnDropper
 
                 sys.modules["__main__"].PreprocessingPipeline = PreprocessingPipeline
-            except ImportError:
-                pass  # Abaikan jika struktur file berbeda
+                sys.modules["__main__"].ScalerWrapper = ScalerWrapper
+                sys.modules["__main__"].StructuralEncoder = StructuralEncoder
+                sys.modules["__main__"].BinaryEncoder = BinaryEncoder
+                sys.modules["__main__"].OHEWrapper = OHEWrapper
+                sys.modules["__main__"].FeatureEngineer = FeatureEngineer
+                sys.modules["__main__"].ColumnDropper = ColumnDropper
+            except ImportError as ie:
+                logger.warning(f"Tidak dapat mendaftarkan semua preprocessing class: {ie}")
 
             # Menggunakan utilitas yang kita buat di Step 1
             self._preprocessor = load_artifact(preprocessor_path, logger)

@@ -158,10 +158,10 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 - [x] Task 3.1.2 — TestMetrics: edge cases (all positive, all negative predictions)
 
 ### Step 4 — Unit Test: XAI Validator
-- [ ] Task 4.1.1 — TestXAIValidator: passes when expected features in top-N
-- [ ] Task 4.1.2 — TestXAIValidator: fails when overlap below XAI_MIN_OVERLAP
-- [ ] Task 4.1.3 — TestXAIValidator: prefix matching for OHE features (Contract_*)
-- [ ] Task 4.1.4 — TestXAIValidator: uses constants from config/settings.py
+- [x] Task 4.1.1 — TestXAIValidator: passes when expected features in top-N
+- [x] Task 4.1.2 — TestXAIValidator: fails when overlap below XAI_MIN_OVERLAP
+- [x] Task 4.1.3 — TestXAIValidator: prefix matching for OHE features (Contract_*)
+- [x] Task 4.1.4 — TestXAIValidator: uses constants from config/settings.py
 
 ### Step 5 — Integration Test: API
 - [ ] Task 5.1.1 — conftest integration: api_client fixture setup and teardown

@@ -117,10 +117,10 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 - [x] Task 2.1.3 — app/main.py: home page content
 
 ### Step 3 — Single Prediction Page
-- [ ] Task 3.1.1 — prediction.py: page config and st.form setup
-- [ ] Task 3.1.2 — prediction.py: 20 input fields in 3 columns
-- [ ] Task 3.2.1 — prediction.py: form submit logic and API call
-- [ ] Task 3.2.2 — prediction.py: result rendering (result_card + shap_chart)
+- [x] Task 3.1.1 — prediction.py: page config and st.form setup
+- [x] Task 3.1.2 — prediction.py: 20 input fields in 3 columns
+- [x] Task 3.2.1 — prediction.py: form submit logic and API call
+- [x] Task 3.2.2 — prediction.py: result rendering (result_card + shap_chart)
 
 ### Step 4 — Batch Prediction Page
 - [ ] Task 4.1.1 — batch_prediction.py: file uploader

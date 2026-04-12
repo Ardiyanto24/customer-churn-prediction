@@ -154,8 +154,8 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 - [x] Task 2.2.1 — TestPipelineSerialization (joblib roundtrip, no NaN, consistent shape)
 
 ### Step 3 — Unit Test: Metrics
-- [ ] Task 3.1.1 — TestMetrics: PR-AUC, ROC-AUC, F1 score calculations
-- [ ] Task 3.1.2 — TestMetrics: edge cases (all positive, all negative predictions)
+- [x] Task 3.1.1 — TestMetrics: PR-AUC, ROC-AUC, F1 score calculations
+- [x] Task 3.1.2 — TestMetrics: edge cases (all positive, all negative predictions)
 
 ### Step 4 — Unit Test: XAI Validator
 - [ ] Task 4.1.1 — TestXAIValidator: passes when expected features in top-N

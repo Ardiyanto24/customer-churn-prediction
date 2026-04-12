@@ -16,17 +16,13 @@ CHURN_POSITIVE_LABEL = "Yes"
 CHURN_NEGATIVE_LABEL = "No"
 
 # Numeric Columns
-NUMERIC_COLS_RAW = [
-    "tenure",
-    "MonthlyCharges",
-    "TotalCharges"
-]
+NUMERIC_COLS_RAW = ["tenure", "MonthlyCharges", "TotalCharges"]
 
 NUMERIC_COLS_PROCESSED = [
     "tenure",
     "MonthlyCharges",
     "tc_residual",
-    "monthly_to_total_ratio"
+    "monthly_to_total_ratio",
 ]
 
 # Categorical Columns (Excluding Target)
@@ -46,7 +42,7 @@ CATEGORICAL_COLS = [
     "StreamingMovies",
     "Contract",
     "PaperlessBilling",
-    "PaymentMethod"
+    "PaymentMethod",
 ]
 
 # Internet Add-on Columns
@@ -56,7 +52,7 @@ ADDON_COLS = [
     "DeviceProtection",
     "TechSupport",
     "StreamingTV",
-    "StreamingMovies"
+    "StreamingMovies",
 ]
 
 # Structural Values (Not Missing Values)
@@ -73,8 +69,8 @@ NO_PHONE_VALUE = "No phone service"
 RANDOM_SEED = 42
 
 # Proporsi pembagian dataset
-TEST_SIZE = 0.15   # 15% untuk test set dari total data
-VAL_SIZE = 0.15    # 15% untuk validation set dari sisa training data
+TEST_SIZE = 0.15  # 15% untuk test set dari total data
+VAL_SIZE = 0.15  # 15% untuk validation set dari sisa training data
 
 # =============================================================================
 # XAI QUALITY GATE CONSTANTS
@@ -90,7 +86,7 @@ EXPECTED_IMPORTANT_FEATURES = [
     "tenure",
     "MonthlyCharges",
     "tc_residual",
-    "InternetService"
+    "InternetService",
 ]
 
 # Jumlah fitur teratas yang dievaluasi dari SHAP feature importance
@@ -120,7 +116,9 @@ MODELS_DIR = PROJECT_ROOT / "models" / "artifacts"
 # Path ke file artifact model dan preprocessor
 # Mencoba membaca dari environment variable, jika kosong gunakan default
 MODEL_PATH = Path(os.getenv("MODEL_PATH", str(MODELS_DIR / "model_final.joblib")))
-PREPROCESSOR_PATH = Path(os.getenv("PREPROCESSOR_PATH", str(MODELS_DIR / "preprocessor.joblib")))
+PREPROCESSOR_PATH = Path(
+    os.getenv("PREPROCESSOR_PATH", str(MODELS_DIR / "preprocessor.joblib"))
+)
 
 # Path internal untuk base model (tidak dikonfigurasi via .env)
 BASE_MODEL_PATH = MODELS_DIR / "base_model.joblib"

@@ -27,7 +27,9 @@ class ModelPredictor:
         self._model_version: str = "unknown"
         self._is_ready: bool = False
 
-    def load_artifacts(self, model_path: Union[str, Path], preprocessor_path: Union[str, Path]) -> bool:
+    def load_artifacts(
+        self, model_path: Union[str, Path], preprocessor_path: Union[str, Path]
+    ) -> bool:
         """
         Memuat model dan preprocessor ke dalam memori.
         Jika gagal, aplikasi tidak crash (degraded mode).
@@ -36,7 +38,8 @@ class ModelPredictor:
             # HACK: Menjembatani custom class dari Jupyter Notebook ke environment API
             try:
                 from src.preprocessing.pipeline import PreprocessingPipeline
-                sys.modules['__main__'].PreprocessingPipeline = PreprocessingPipeline
+
+                sys.modules["__main__"].PreprocessingPipeline = PreprocessingPipeline
             except ImportError:
                 pass  # Abaikan jika struktur file berbeda
 
@@ -49,16 +52,22 @@ class ModelPredictor:
             self._is_ready = True
 
             # Emoji dihapus agar terminal Windows tidak crash
-            logger.info("SUKSES: Semua artifact berhasil dimuat. Predictor siap digunakan.")
+            logger.info(
+                "SUKSES: Semua artifact berhasil dimuat. Predictor siap digunakan."
+            )
             return True
 
         except Exception as e:
             self._is_ready = False
             # Emoji dihapus agar terminal Windows tidak crash
-            logger.error(f"GAGAL: Tidak dapat memuat artifact. API berjalan dalam degraded mode. Error: {e}")
+            logger.error(
+                f"GAGAL: Tidak dapat memuat artifact. API berjalan dalam degraded mode. Error: {e}"
+            )
             return False
 
-    def _prepare_dataframe(self, inputs: Union[CustomerInput, List[CustomerInput]]) -> pd.DataFrame:
+    def _prepare_dataframe(
+        self, inputs: Union[CustomerInput, List[CustomerInput]]
+    ) -> pd.DataFrame:
         """
         Mengonversi input Pydantic (tunggal atau batch) menjadi pandas DataFrame.
         Urutan kolom akan secara otomatis mengikuti urutan field di Pydantic schema.
@@ -85,7 +94,9 @@ def predict(self, input_data: CustomerInput) -> PredictionResult:
     Menjalankan prediksi untuk satu data pelanggan.
     """
     if not self._is_ready:
-        raise RuntimeError("Model dan preprocessor belum siap. Pastikan artifact sudah di-load.")
+        raise RuntimeError(
+            "Model dan preprocessor belum siap. Pastikan artifact sudah di-load."
+        )
 
     # 1. Konversi ke DataFrame
     df = self._prepare_dataframe(input_data)
@@ -127,7 +138,9 @@ def predict_batch(self, inputs: List[CustomerInput]) -> List[PredictionResult]:
     Menjalankan prediksi untuk banyak data pelanggan sekaligus (dioptimasi).
     """
     if not self._is_ready:
-        raise RuntimeError("Model dan preprocessor belum siap. Pastikan artifact sudah di-load.")
+        raise RuntimeError(
+            "Model dan preprocessor belum siap. Pastikan artifact sudah di-load."
+        )
 
     start_time = time.time()
 
@@ -219,7 +232,9 @@ def compute_shap(self, input_data: CustomerInput) -> Optional[Dict[str, float]]:
                     break  # Pindah ke fitur hasil encode berikutnya
 
         # 5. Urutkan dari pengaruh yang paling besar (descending)
-        sorted_shap = dict(sorted(shap_dict.items(), key=lambda item: item[1], reverse=True))
+        sorted_shap = dict(
+            sorted(shap_dict.items(), key=lambda item: item[1], reverse=True)
+        )
 
         return sorted_shap
 

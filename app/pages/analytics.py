@@ -13,7 +13,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-from app.components.api_client import check_health
+from app.components.api_client import check_health  # noqa: E402
 
 st.set_page_config(
     page_title="TCCP — Churn Predictor",
@@ -95,10 +95,15 @@ with tab_perm:
         )
 
 with tab_builtin:
-    builtin_files = [
-        f for f in _XAI_DIR.glob("*.png")
-        if "builtin" in f.name.lower() or "feature_importance" in f.name.lower()
-    ] if _XAI_DIR.exists() else []
+    builtin_files = (
+        [
+            f
+            for f in _XAI_DIR.glob("*.png")
+            if "builtin" in f.name.lower() or "feature_importance" in f.name.lower()
+        ]
+        if _XAI_DIR.exists()
+        else []
+    )
 
     if builtin_files:
         st.image(
@@ -145,7 +150,9 @@ if batch_results is not None:
         rows = [
             {
                 "risk_level": item.get("result", {}).get("risk_level", ""),
-                "churn_probability": item.get("result", {}).get("churn_probability", 0.0),
+                "churn_probability": item.get("result", {}).get(
+                    "churn_probability", 0.0
+                ),
             }
             for item in items
         ]
@@ -156,7 +163,9 @@ if batch_results is not None:
         with chart_col1:
             risk_counts = dist_df["risk_level"].value_counts()
             colors = [
-                {"high": "#FF4B4B", "medium": "#FFA500", "low": "#21C354"}.get(k, "#CCCCCC")
+                {"high": "#FF4B4B", "medium": "#FFA500", "low": "#21C354"}.get(
+                    k, "#CCCCCC"
+                )
                 for k in risk_counts.index
             ]
             fig1, ax1 = plt.subplots()
@@ -173,7 +182,12 @@ if batch_results is not None:
 
         with chart_col2:
             fig2, ax2 = plt.subplots()
-            ax2.hist(dist_df["churn_probability"], bins=20, color="#4B9EFF", edgecolor="white")
+            ax2.hist(
+                dist_df["churn_probability"],
+                bins=20,
+                color="#4B9EFF",
+                edgecolor="white",
+            )
             ax2.set_xlabel("Churn Probability")
             ax2.set_ylabel("Count")
             ax2.set_title("Churn Probability Distribution")
@@ -182,7 +196,9 @@ if batch_results is not None:
 
         with chart_col3:
             risk_order = ["low", "medium", "high"]
-            ordered_counts = dist_df["risk_level"].value_counts().reindex(risk_order, fill_value=0)
+            ordered_counts = (
+                dist_df["risk_level"].value_counts().reindex(risk_order, fill_value=0)
+            )
             bar_colors = ["#21C354", "#FFA500", "#FF4B4B"]
             fig3, ax3 = plt.subplots()
             ax3.bar(ordered_counts.index, ordered_counts.values, color=bar_colors)

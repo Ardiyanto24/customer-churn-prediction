@@ -9,9 +9,9 @@ from pathlib import Path
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-from app.components.api_client import predict_single
-from app.components.result_card import render_result_card
-from app.components.shap_chart import render_shap_bar_chart
+from app.components.api_client import predict_single  # noqa: E402
+from app.components.result_card import render_result_card  # noqa: E402
+from app.components.shap_chart import render_shap_bar_chart  # noqa: E402
 
 st.set_page_config(
     page_title="TCCP — Churn Predictor",

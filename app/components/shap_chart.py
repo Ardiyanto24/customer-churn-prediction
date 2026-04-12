@@ -29,7 +29,9 @@ def render_shap_bar_chart(shap_values: Optional[Dict[str, float]]) -> None:
         return
 
     # Urutkan berdasarkan absolute value descending, ambil top-10
-    sorted_items = sorted(shap_values.items(), key=lambda x: abs(x[1]), reverse=True)[:10]
+    sorted_items = sorted(shap_values.items(), key=lambda x: abs(x[1]), reverse=True)[
+        :10
+    ]
 
     if not sorted_items:
         st.info("SHAP values tidak tersedia untuk prediksi ini.")

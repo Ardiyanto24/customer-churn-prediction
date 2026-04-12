@@ -10,7 +10,7 @@ import pandas as pd
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-from app.components.api_client import predict_batch_csv
+from app.components.api_client import predict_batch_csv  # noqa: E402
 
 st.set_page_config(
     page_title="TCCP — Churn Predictor",
@@ -32,12 +32,25 @@ st.caption(
 # Task 4.1.1 — File uploader
 # ---------------------------------------------------------------------------
 _TEMPLATE_COLUMNS = [
-    "gender", "SeniorCitizen", "Partner", "Dependents", "tenure",
-    "PhoneService", "MultipleLines", "InternetService",
-    "OnlineSecurity", "OnlineBackup", "DeviceProtection", "TechSupport",
-    "StreamingTV", "StreamingMovies",
-    "Contract", "PaperlessBilling", "PaymentMethod",
-    "MonthlyCharges", "TotalCharges",
+    "gender",
+    "SeniorCitizen",
+    "Partner",
+    "Dependents",
+    "tenure",
+    "PhoneService",
+    "MultipleLines",
+    "InternetService",
+    "OnlineSecurity",
+    "OnlineBackup",
+    "DeviceProtection",
+    "TechSupport",
+    "StreamingTV",
+    "StreamingMovies",
+    "Contract",
+    "PaperlessBilling",
+    "PaymentMethod",
+    "MonthlyCharges",
+    "TotalCharges",
 ]
 
 uploaded_file = st.file_uploader(
@@ -65,7 +78,10 @@ st.download_button(
     mime="text/csv",
 )
 
-if "uploaded_file" in st.session_state and st.session_state["uploaded_file"] is not None:
+if (
+    "uploaded_file" in st.session_state
+    and st.session_state["uploaded_file"] is not None
+):
     file_obj = st.session_state["uploaded_file"]
 
     try:

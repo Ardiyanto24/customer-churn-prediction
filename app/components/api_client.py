@@ -12,8 +12,8 @@ import httpx
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-from config import settings
-from src.utils.logger import get_logger
+from config import settings  # noqa: E402
+from src.utils.logger import get_logger  # noqa: E402
 
 logger = get_logger("app.api_client")
 

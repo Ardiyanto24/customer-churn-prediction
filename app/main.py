@@ -48,14 +48,12 @@ with st.sidebar:
 # ---------------------------------------------------------------------------
 st.title("Customer Churn Prediction")
 
-st.markdown(
-    """
+st.markdown("""
     Aplikasi ini memprediksi kemungkinan pelanggan telekomunikasi berhenti berlangganan (*churn*)
     menggunakan model machine learning yang telah dilatih dengan data historis pelanggan.
 
     Pilih salah satu mode prediksi di bawah, atau gunakan sidebar untuk navigasi langsung.
-    """
-)
+    """)
 
 st.divider()
 
@@ -63,30 +61,24 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     st.subheader("🔍 Single Prediction")
-    st.markdown(
-        """
+    st.markdown("""
         Masukkan data satu pelanggan secara manual dan dapatkan prediksi churn beserta
         penjelasan berbasis SHAP yang menunjukkan faktor pendorong utama.
-        """
-    )
+        """)
     st.page_link("pages/prediction.py", label="Buka Single Prediction →")
 
 with col2:
     st.subheader("📂 Batch Prediction")
-    st.markdown(
-        """
+    st.markdown("""
         Upload file CSV berisi banyak pelanggan sekaligus. Unduh template CSV,
         isi datanya, lalu jalankan prediksi massal dan ekspor hasilnya.
-        """
-    )
+        """)
     st.page_link("pages/batch_prediction.py", label="Buka Batch Prediction →")
 
 with col3:
     st.subheader("📈 Analytics")
-    st.markdown(
-        """
+    st.markdown("""
         Lihat performa model, visualisasi SHAP global, feature importance,
         dan distribusi hasil prediksi dari sesi batch terakhir.
-        """
-    )
+        """)
     st.page_link("pages/analytics.py", label="Buka Analytics →")

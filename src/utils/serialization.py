@@ -6,7 +6,9 @@ from pathlib import Path
 from typing import Any, Optional
 
 
-def save_artifact(obj: Any, path: str | Path, logger: Optional[logging.Logger] = None) -> bool:
+def save_artifact(
+    obj: Any, path: str | Path, logger: Optional[logging.Logger] = None
+) -> bool:
     """
     Menyimpan objek Python (seperti model atau preprocessor) ke dalam file menggunakan joblib.
     Folder parent akan dibuat secara otomatis jika belum ada.
@@ -44,7 +46,9 @@ def load_artifact(path: str | Path, logger: Optional[logging.Logger] = None) -> 
     try:
         obj = joblib.load(file_path)
         if logger:
-            logger.info(f"Artifact berhasil dimuat dari: {file_path} (Tipe: {type(obj).__name__})")
+            logger.info(
+                f"Artifact berhasil dimuat dari: {file_path} (Tipe: {type(obj).__name__})"
+            )
         return obj
     except Exception as e:
         if logger:

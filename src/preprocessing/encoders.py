@@ -9,6 +9,7 @@ class EncoderHelper(BaseEstimator, TransformerMixin):
     Custom transformer untuk membantu proses encoding fitur kategorikal
     pada dataset Telco Customer Churn.
     """
+
     def __init__(self):
         pass
 

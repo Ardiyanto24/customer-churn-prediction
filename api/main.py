@@ -36,19 +36,21 @@ async def lifespan(app: FastAPI):
 
     # Memuat model dan preprocessor HANYA SATU KALI saat API menyala
     success = predictor.load_artifacts(
-        model_path=settings.MODEL_PATH,
-        preprocessor_path=settings.PREPROCESSOR_PATH
+        model_path=settings.MODEL_PATH, preprocessor_path=settings.PREPROCESSOR_PATH
     )
 
     if success:
         logger.info("SUKSES: Artifacts berhasil dimuat. API siap melayani prediksi.")
     else:
-        logger.error("GAGAL: Tidak dapat memuat artifacts! API berjalan dalam mode degraded.")
+        logger.error(
+            "GAGAL: Tidak dapat memuat artifacts! API berjalan dalam mode degraded."
+        )
 
     yield  # Pada titik ini aplikasi sedang berjalan melayani request
 
     # Dijalankan saat aplikasi menerima sinyal untuk berhenti
     logger.info("Aplikasi sedang shutdown. Membersihkan resources...")
+
 
 # Inisialisasi instance aplikasi FastAPI
 app = FastAPI(
@@ -126,7 +128,9 @@ async def predict_single(input_data: CustomerInput):
         # 3. Gabungkan SHAP ke dalam hasil prediksi
         prediction_result.shap_values = shap_values
 
-        return PredictionResponse(model_version=predictor._model_version, result=prediction_result)
+        return PredictionResponse(
+            model_version=predictor._model_version, result=prediction_result
+        )
     except Exception as e:
         logger.error(f"Error pada single prediction: {e}")
         return JSONResponse(
@@ -149,7 +153,10 @@ async def predict_batch_json(inputs: List[CustomerInput]):
     if not predictor._is_ready:
         return JSONResponse(
             status_code=503,
-            content={"status": "error", "message": "Model belum siap menerima request."},
+            content={
+                "status": "error",
+                "message": "Model belum siap menerima request.",
+            },
         )
 
     if len(inputs) == 0:
@@ -170,7 +177,10 @@ async def predict_batch_json(inputs: List[CustomerInput]):
     try:
         predictions = predictor.predict_batch(inputs)
 
-        results = [BatchPredictionItem(index=i, result=pred) for i, pred in enumerate(predictions)]
+        results = [
+            BatchPredictionItem(index=i, result=pred)
+            for i, pred in enumerate(predictions)
+        ]
 
         # Hitung berapa banyak yang diprediksi akan churn
         churn_count = sum(1 for p in predictions if p.churn_prediction)
@@ -203,12 +213,16 @@ async def predict_batch_csv(file: UploadFile = File(...)):
     if not predictor._is_ready:
         return JSONResponse(
             status_code=503,
-            content={"status": "error", "message": "Model belum siap menerima request."},
+            content={
+                "status": "error",
+                "message": "Model belum siap menerima request.",
+            },
         )
 
     if not file.filename.endswith(".csv"):
         return JSONResponse(
-            status_code=422, content={"status": "error", "message": "File harus berformat .csv"}
+            status_code=422,
+            content={"status": "error", "message": "File harus berformat .csv"},
         )
 
     try:
@@ -244,7 +258,9 @@ async def predict_batch_csv(file: UploadFile = File(...)):
             try:
                 valid_inputs.append(CustomerInput(**record))
             except Exception:
-                skipped_indices.append(i)  # Abaikan baris yang gagal validasi tipe/nilai
+                skipped_indices.append(
+                    i
+                )  # Abaikan baris yang gagal validasi tipe/nilai
 
         if not valid_inputs:
             return JSONResponse(
@@ -267,17 +283,20 @@ async def predict_batch_csv(file: UploadFile = File(...)):
         # 5. Lakukan prediksi massal
         predictions = predictor.predict_batch(valid_inputs)
 
-        results = [BatchPredictionItem(index=i, result=pred) for i, pred in enumerate(predictions)]
+        results = [
+            BatchPredictionItem(index=i, result=pred)
+            for i, pred in enumerate(predictions)
+        ]
 
         churn_count = sum(1 for p in predictions if p.churn_prediction)
 
         # 6. Susun pesan status jika ada baris yang dilewati
         status_msg = "success"
         if skipped_indices:
-            status_msg = (
-                f"success_with_warnings: melewati {len(skipped_indices)} baris tidak valid."
+            status_msg = f"success_with_warnings: melewati {len(skipped_indices)} baris tidak valid."
+            logger.warning(
+                f"File CSV {file.filename}: Baris dilewati (indeks): {skipped_indices}"
             )
-            logger.warning(f"File CSV {file.filename}: Baris dilewati (indeks): {skipped_indices}")
 
         return BatchPredictionResponse(
             status=status_msg,
@@ -291,7 +310,10 @@ async def predict_batch_csv(file: UploadFile = File(...)):
         logger.error(f"Error pada batch prediction CSV: {e}")
         return JSONResponse(
             status_code=500,
-            content={"status": "error", "message": f"Gagal memproses file CSV: {str(e)}"},
+            content={
+                "status": "error",
+                "message": f"Gagal memproses file CSV: {str(e)}",
+            },
         )
 
 
@@ -317,4 +339,6 @@ if __name__ == "__main__":
     # Catatan: Untuk development dengan hot reload, gunakan perintah dari terminal:
     # uvicorn api.main:app --reload
 
-    uvicorn.run(app="api.main:app", host=settings.API_HOST, port=settings.API_PORT, reload=False)
+    uvicorn.run(
+        app="api.main:app", host=settings.API_HOST, port=settings.API_PORT, reload=False
+    )

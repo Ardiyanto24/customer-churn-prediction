@@ -37,7 +37,10 @@ class CustomerInput(BaseModel):
     Contract: Literal["Month-to-month", "One year", "Two year"]
     PaperlessBilling: Literal["Yes", "No"]
     PaymentMethod: Literal[
-        "Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"
+        "Electronic check",
+        "Mailed check",
+        "Bank transfer (automatic)",
+        "Credit card (automatic)",
     ]
     MonthlyCharges: float = Field(ge=0.0, description="Tagihan bulanan dalam USD")
     TotalCharges: float = Field(ge=0.0, description="Total tagihan selama berlangganan")
@@ -74,8 +77,12 @@ class PredictionResult(BaseModel):
     """Hasil prediksi untuk satu pelanggan."""
 
     churn_prediction: bool
-    churn_probability: float = Field(ge=0.0, le=1.0, description="Probabilitas churn (0.0 - 1.0)")
-    risk_level: str = Field(description="'high' (>= 0.7), 'medium' (>= 0.4), atau 'low' (< 0.4)")
+    churn_probability: float = Field(
+        ge=0.0, le=1.0, description="Probabilitas churn (0.0 - 1.0)"
+    )
+    risk_level: str = Field(
+        description="'high' (>= 0.7), 'medium' (>= 0.4), atau 'low' (< 0.4)"
+    )
     shap_values: Optional[Dict[str, float]] = None
 
 

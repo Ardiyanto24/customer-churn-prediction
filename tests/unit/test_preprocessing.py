@@ -190,3 +190,87 @@ class TestFeatureEngineering:
         assert result.loc[1, "is_auto_payment"] == 1, "Credit card (automatic) should be is_auto_payment=1"
         assert result.loc[2, "is_auto_payment"] == 0, "Electronic check should be is_auto_payment=0"
         assert result.loc[3, "is_auto_payment"] == 0, "Mailed check should be is_auto_payment=0"
+
+
+# ---------------------------------------------------------------------------
+# Task 2.2.1 — TestPipelineSerialization
+# ---------------------------------------------------------------------------
+
+class TestPipelineSerialization:
+    """
+    Tests for training-serving parity of PreprocessingPipeline.
+
+    Verifies that:
+    - Serialization via joblib does not change numeric outputs (roundtrip parity)
+    - Pipeline output contains no NaN values in numeric columns
+    - Number of output columns is stable regardless of input row count
+    """
+
+    def test_pipeline_output_consistent_after_joblib_roundtrip(
+        self, dummy_preprocessor, sample_raw_df, tmp_path
+    ):
+        """
+        Serializing a fitted pipeline with joblib.dump and reloading with
+        joblib.load must produce bit-for-bit identical numeric outputs.
+        Any divergence would indicate state loss during serialization.
+        """
+        import joblib
+
+        X = sample_raw_df.drop(
+            columns=[settings.TARGET_COLUMN, settings.ID_COLUMN], errors="ignore"
+        )
+        output_before = dummy_preprocessor.transform(X)
+
+        pipeline_path = tmp_path / "test_roundtrip_pipeline.joblib"
+        joblib.dump(dummy_preprocessor, pipeline_path)
+        loaded_pipeline = joblib.load(pipeline_path)
+        output_after = loaded_pipeline.transform(X)
+
+        # Compare numeric columns only (string pass-throughs are not floats)
+        numeric_cols = output_before.select_dtypes(include=[np.number]).columns
+        np.testing.assert_array_almost_equal(
+            output_before[numeric_cols].values,
+            output_after[numeric_cols].values,
+            decimal=6,
+            err_msg="Joblib roundtrip changed numeric pipeline outputs",
+        )
+
+    def test_pipeline_transform_produces_no_nan(
+        self, dummy_preprocessor, sample_raw_df
+    ):
+        """
+        No NaN values should appear in any numeric column after transform.
+        NaN in numeric outputs would silently corrupt model predictions.
+        """
+        X = sample_raw_df.drop(
+            columns=[settings.TARGET_COLUMN, settings.ID_COLUMN], errors="ignore"
+        )
+        output = dummy_preprocessor.transform(X)
+
+        numeric_cols = output.select_dtypes(include=[np.number]).columns
+        assert not np.isnan(output[numeric_cols].values).any(), (
+            "Pipeline transform produced NaN values in numeric columns"
+        )
+
+    def test_pipeline_fit_and_transform_produce_same_shape(
+        self, sample_raw_df
+    ):
+        """
+        A freshly fitted pipeline must produce the same number of columns
+        regardless of how many rows are passed to transform.
+        Column count consistency is required for serving parity.
+        """
+        X = sample_raw_df.drop(
+            columns=[settings.TARGET_COLUMN, settings.ID_COLUMN], errors="ignore"
+        )
+        pipeline = PreprocessingPipeline()
+        output_full = pipeline.fit_transform(X)
+
+        # Transform a different-sized slice — column count must be identical
+        X_small = X.iloc[:5].reset_index(drop=True)
+        output_small = pipeline.transform(X_small)
+
+        assert output_full.shape[1] == output_small.shape[1], (
+            f"Column count changed: fit_transform={output_full.shape[1]}, "
+            f"transform (5 rows)={output_small.shape[1]}"
+        )

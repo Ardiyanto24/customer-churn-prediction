@@ -22,7 +22,7 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 | DEV-01 | 4 steps | ✅ Complete (manual) |
 | DEV-02 | 4 steps | ✅ Complete (manual) |
 | DEV-03 | 5 steps | ✅ Complete |
-| DEV-04 | 5 steps | ⬜ Not started |
+| DEV-04 | 6 steps | ✅ Complete |
 | DEV-05 | 3 steps | ⬜ Not started |
 | DEV-06 | 5 steps | ⬜ Not started |
 | DEV-07 | 3 steps | ⬜ Not started |
@@ -164,14 +164,19 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 - [x] Task 4.1.4 — TestXAIValidator: uses constants from config/settings.py
 
 ### Step 5 — Integration Test: API
-- [ ] Task 5.1.1 — conftest integration: api_client fixture setup and teardown
-- [ ] Task 5.1.2 — conftest integration: degraded_api_client fixture
-- [ ] Task 5.2.1 — TestPredictEndpoint: 200 valid input, schema validation, shap_values present
-- [ ] Task 5.2.2 — TestPredictWhenModelNotReady: 503 when model not loaded
-- [ ] Task 5.3.1 — TestBatchPredictEndpoint: correct count, empty list 422, over limit 422
-- [ ] Task 5.3.2 — TestBatchCsvEndpoint: valid CSV 200, non-csv 422, missing column 422, drops id/Churn
+- [x] Task 5.1.1 — conftest integration: api_client fixture setup and teardown
+- [x] Task 5.1.2 — conftest integration: degraded_api_client fixture
+- [x] Task 5.2.1 — TestPredictEndpoint: 200 valid input, schema validation, shap_values present
+- [x] Task 5.2.2 — TestPredictWhenModelNotReady: 503 when model not loaded
+- [x] Task 5.3.1 — TestBatchPredictEndpoint: correct count, empty list 422, over limit 422
+- [x] Task 5.3.2 — TestBatchCsvEndpoint: valid CSV 200, non-csv 422, missing column 422, drops id/Churn
 
-> Verification tasks (Step 6) are run manually — not tracked here.
+### Step 6 — Verification
+- [x] Task 6.1.1 — run unit tests: 27 passed, 0 failed (all 3 unit test files)
+- [x] Task 6.1.2 — run preprocessing tests: 11 passed, 0 failed
+- [x] Task 6.1.3 — run integration tests: 16 passed, 0 failed
+- [x] Task 6.2.1 — full suite with coverage: 43 passed, api/ 73%+, TOTAL 78%
+- [x] Task 6.2.2 — marker verification: -m unit=27 tests, -m integration=16 tests
 
 ---
 

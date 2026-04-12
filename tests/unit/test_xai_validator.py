@@ -199,3 +199,101 @@ class TestXAIValidatorFail:
         assert any("XAI gate FAILED" in msg for msg in warning_messages), (
             f"Expected 'XAI gate FAILED' in warning logs. Got: {warning_messages}"
         )
+
+
+# ---------------------------------------------------------------------------
+# Task 4.1.4 — TestXAIValidatorEdgeCases
+# ---------------------------------------------------------------------------
+
+class TestXAIValidatorEdgeCases:
+    """
+    Tests for custom top_n / min_overlap parameters and their interaction.
+    Verifies that the validator uses constants from config/settings.py as
+    defaults and accepts overrides without modifying global state.
+    """
+
+    def test_validator_with_custom_top_n(self):
+        """
+        With all 5 expected features at positions 1-5 (and noise at 6-10):
+        - top_n=5  → all 5 expected in top-5 → overlap=1.0 → passes (True)
+        - top_n=3 + min_overlap=1.0 → only 3/5 in top-3 → overlap=0.6 < 1.0 → fails (False)
+        """
+        expected = settings.EXPECTED_IMPORTANT_FEATURES  # 5 features
+
+        # Positions 1-5: all 5 expected; positions 6-10: noise
+        top_features = list(expected) + [
+            "noise_6", "noise_7", "noise_8", "noise_9", "noise_10"
+        ]
+        shap_values = build_mock_shap_values(top_features, other_features=[])
+
+        # With top_n=5: all 5 expected are in the top-5 → passes
+        result_top5 = validate_xai(shap_values, top_n=5)
+        assert result_top5 is True, (
+            f"top_n=5 with all expected features should pass, got {result_top5}"
+        )
+
+        # With top_n=3 and min_overlap=1.0: only 3 of 5 expected in top-3 → fails
+        result_top3 = validate_xai(shap_values, top_n=3, min_overlap=1.0)
+        assert result_top3 is False, (
+            f"top_n=3, min_overlap=1.0 with only 3/5 expected should fail, got {result_top3}"
+        )
+
+    def test_validator_with_custom_min_overlap(self):
+        """
+        With 4 of 5 expected features in top-10 (overlap = 4/5 = 0.8):
+        - min_overlap=1.0 → 0.8 < 1.0 → fails (False)
+        - min_overlap=0.5 → 0.8 ≥ 0.5 → passes (True)
+        """
+        expected = settings.EXPECTED_IMPORTANT_FEATURES  # 5 features
+
+        # 4 expected in top-10, 1 expected gets low importance
+        top_features = list(expected[:4]) + [
+            "noise_1", "noise_2", "noise_3", "noise_4", "noise_5", "noise_6"
+        ]
+        other_features = list(expected[4:])  # 1 expected feature with low importance
+        shap_values = build_mock_shap_values(top_features, other_features)
+
+        # With min_overlap=1.0: 4/5=0.8 < 1.0 → fails
+        result_strict = validate_xai(shap_values, min_overlap=1.0)
+        assert result_strict is False, (
+            f"min_overlap=1.0 with 4/5 matched should fail, got {result_strict}"
+        )
+
+        # With min_overlap=0.5: 4/5=0.8 ≥ 0.5 → passes
+        result_lenient = validate_xai(shap_values, min_overlap=0.5)
+        assert result_lenient is True, (
+            f"min_overlap=0.5 with 4/5 matched should pass, got {result_lenient}"
+        )
+
+    def test_validator_uses_constants_from_settings(self):
+        """
+        Default behaviour must be driven by settings.py constants, not hardcoded
+        values. Verify that the defaults align with the declared constants.
+        """
+        expected = settings.EXPECTED_IMPORTANT_FEATURES
+        top_n = settings.XAI_TOP_N_FEATURES
+        min_overlap = settings.XAI_MIN_OVERLAP
+
+        # Build SHAP values that barely pass with the defaults
+        n_expected = len(expected)
+        # min required matches = smallest integer ≥ n_expected * min_overlap
+        import math
+        min_matches = math.ceil(n_expected * min_overlap)
+
+        top_features = list(expected[:min_matches]) + [
+            f"noise_{i}" for i in range(top_n - min_matches + 1)
+        ]
+        other_features = list(expected[min_matches:])
+        shap_values = build_mock_shap_values(top_features, other_features)
+
+        result_default = validate_xai(shap_values)
+        expected_overlap = min_matches / n_expected
+        expected_pass = expected_overlap >= min_overlap
+
+        assert result_default is expected_pass, (
+            f"Default validate_xai() should return {expected_pass} "
+            f"(overlap={expected_overlap:.2f}, min_overlap={min_overlap}), "
+            f"but got {result_default}. "
+            f"Check that EXPECTED_IMPORTANT_FEATURES, XAI_TOP_N_FEATURES, "
+            f"and XAI_MIN_OVERLAP are imported from config/settings.py."
+        )

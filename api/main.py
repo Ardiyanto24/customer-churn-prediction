@@ -28,7 +28,6 @@ _start_time = time.time()
 
 
 @asynccontextmanager
-@asynccontextmanager
 async def lifespan(app: FastAPI):
     """
     Lifespan event handler untuk mengelola state saat aplikasi mulai (startup) dan berhenti (shutdown).
@@ -37,7 +36,7 @@ async def lifespan(app: FastAPI):
 
     # Memuat model dan preprocessor HANYA SATU KALI saat API menyala
     success = predictor.load_artifacts(
-        model_path=settings.MODEL_PATH, 
+        model_path=settings.MODEL_PATH,
         preprocessor_path=settings.PREPROCESSOR_PATH
     )
 

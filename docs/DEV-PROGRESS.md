@@ -149,9 +149,9 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 - [x] Task 1.2.5 — conftest.py: api_client fixture (TestClient with injected dummy model)
 
 ### Step 2 — Unit Test: Preprocessing
-- [ ] Task 2.1.1 — TestStructuralEncoder (no_internet vs no, no_phone vs no, fit-only)
-- [ ] Task 2.1.2 — TestFeatureEngineering (tc_residual, monthly_to_total_ratio)
-- [ ] Task 2.2.1 — TestPipelineLeakage (fit only on train, transform-only on val/test)
+- [x] Task 2.1.1 — TestStructuralEncoder (no_internet vs no, no_phone vs no, fit-only)
+- [x] Task 2.1.2 — TestFeatureEngineering (tc_residual, monthly_to_total_ratio)
+- [x] Task 2.2.1 — TestPipelineSerialization (joblib roundtrip, no NaN, consistent shape)
 
 ### Step 3 — Unit Test: Metrics
 - [ ] Task 3.1.1 — TestMetrics: PR-AUC, ROC-AUC, F1 score calculations

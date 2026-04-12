@@ -12,7 +12,6 @@ class CustomerInput(BaseModel):
     """
 
     # Demografi
-    gender: Literal["Male", "Female"]
     SeniorCitizen: int = Field(
         ge=0, le=1, description="1 jika pelanggan adalah lansia, 0 jika tidak"
     )
@@ -49,7 +48,6 @@ class CustomerInput(BaseModel):
     model_config = {
         "json_schema_extra": {
             "example": {
-                "gender": "Female",
                 "SeniorCitizen": 0,
                 "Partner": "No",
                 "Dependents": "No",

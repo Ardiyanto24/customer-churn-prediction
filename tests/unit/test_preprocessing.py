@@ -207,26 +207,32 @@ class TestPipelineSerialization:
     """
 
     def test_pipeline_output_consistent_after_joblib_roundtrip(
-        self, dummy_preprocessor, sample_raw_df, tmp_path
+        self, sample_raw_df, tmp_path
     ):
         """
-        Serializing a fitted pipeline with joblib.dump and reloading with
-        joblib.load must produce bit-for-bit identical numeric outputs.
-        Any divergence would indicate state loss during serialization.
+        Serializing a fitted PreprocessingPipeline with joblib.dump and
+        reloading with joblib.load must produce bit-for-bit identical numeric
+        outputs. Any divergence indicates state loss during serialization.
+
+        Uses a fresh pipeline (not dummy_preprocessor) to avoid pickle
+        module-resolution issues with the _SmartPreprocessor wrapper.
         """
         import joblib
 
         X = sample_raw_df.drop(
             columns=[settings.TARGET_COLUMN, settings.ID_COLUMN], errors="ignore"
         )
-        output_before = dummy_preprocessor.transform(X)
+        pipeline = PreprocessingPipeline()
+        pipeline.fit(X)
+        output_before = pipeline.transform(X)
 
         pipeline_path = tmp_path / "test_roundtrip_pipeline.joblib"
-        joblib.dump(dummy_preprocessor, pipeline_path)
+        joblib.dump(pipeline, pipeline_path)
         loaded_pipeline = joblib.load(pipeline_path)
         output_after = loaded_pipeline.transform(X)
 
-        # Compare numeric columns only (string pass-throughs are not floats)
+        # Compare numeric columns only (string pass-throughs cannot be compared
+        # with assert_array_almost_equal)
         numeric_cols = output_before.select_dtypes(include=[np.number]).columns
         np.testing.assert_array_almost_equal(
             output_before[numeric_cols].values,
@@ -239,16 +245,17 @@ class TestPipelineSerialization:
         self, dummy_preprocessor, sample_raw_df
     ):
         """
-        No NaN values should appear in any numeric column after transform.
-        NaN in numeric outputs would silently corrupt model predictions.
+        No NaN values should appear in any output column after transform.
+        dummy_preprocessor returns numeric-only output (via _SmartPreprocessor),
+        so the check applies to all columns.
         """
         X = sample_raw_df.drop(
             columns=[settings.TARGET_COLUMN, settings.ID_COLUMN], errors="ignore"
         )
         output = dummy_preprocessor.transform(X)
 
-        numeric_cols = output.select_dtypes(include=[np.number]).columns
-        assert not np.isnan(output[numeric_cols].values).any(), (
+        # output is already numeric-only from _SmartPreprocessor
+        assert not np.isnan(output.values).any(), (
             "Pipeline transform produced NaN values in numeric columns"
         )
 

@@ -15,9 +15,50 @@ import pandas as pd
 import pytest
 from sklearn.linear_model import LogisticRegression
 from starlette.testclient import TestClient
+from unittest.mock import patch
 
 from config import settings
 from src.preprocessing.pipeline import PreprocessingPipeline
+
+
+# ---------------------------------------------------------------------------
+# _SmartPreprocessor — numeric-only wrapper for test fixtures
+# ---------------------------------------------------------------------------
+
+class _SmartPreprocessor:
+    """
+    Wraps PreprocessingPipeline and ensures fully-numeric transform output
+    by selecting only numeric columns after each call.
+
+    Rationale: PreprocessingPipeline with default cols=None for each encoder
+    leaves categorical columns as Python strings. A real preprocessor.joblib
+    would have been fit with explicit cols and would produce fully-numeric
+    output. This wrapper reproduces that behaviour for dummy test fixtures
+    without requiring the actual artifact or changing any src/ code.
+
+    Also provides get_feature_names_out() so the SHAP mock in api_client
+    can build a correctly-keyed dict.
+    """
+
+    def __init__(self):
+        self._pipeline = PreprocessingPipeline()
+        self._numeric_cols: list = []
+
+    def fit(self, X, y=None):
+        self._pipeline.fit(X, y)
+        X_out = self._pipeline.transform(X)
+        self._numeric_cols = X_out.select_dtypes(include=[np.number]).columns.tolist()
+        return self
+
+    def transform(self, X):
+        X_out = self._pipeline.transform(X)
+        return X_out[self._numeric_cols]
+
+    def fit_transform(self, X, y=None):
+        return self.fit(X, y).transform(X)
+
+    def get_feature_names_out(self, input_features=None):
+        return list(self._numeric_cols)
 
 
 # ---------------------------------------------------------------------------
@@ -358,14 +399,18 @@ def dummy_preprocessor() -> PreprocessingPipeline:
 
     Raises on import or fit errors — this is expected behaviour indicating
     that src/preprocessing/pipeline.py is not yet implemented.
+
+    Returns a _SmartPreprocessor (wraps PreprocessingPipeline + numeric selection)
+    so that downstream fixtures (dummy_model, api_client) receive a fully-numeric
+    DataFrame from transform() — required for LogisticRegression compatibility.
     """
     df = _build_sample_df()
     X = df.drop(
         columns=[settings.TARGET_COLUMN, settings.ID_COLUMN], errors="ignore"
     )
-    pipeline = PreprocessingPipeline()
-    pipeline.fit(X)
-    return pipeline
+    smart = _SmartPreprocessor()
+    smart.fit(X)
+    return smart
 
 
 # ---------------------------------------------------------------------------
@@ -415,14 +460,23 @@ def api_client(dummy_model: LogisticRegression, dummy_preprocessor: Preprocessin
     from api.main import app
     from api.predictor import predictor
 
-    with TestClient(app) as client:
-        # Lifespan has run — inject dummy artifacts into the singleton
-        predictor._model = dummy_model
-        predictor._preprocessor = dummy_preprocessor
-        predictor._is_ready = True
-        predictor._model_version = "dummy_v1"
+    # Build a static SHAP dict whose keys match the preprocessor's numeric features.
+    # compute_shap is mocked because shap.Explainer requires background data that
+    # is not available for a dummy LogisticRegression in a test environment.
+    _mock_shap = {
+        feat: round(0.05 + i * 0.04, 4)
+        for i, feat in enumerate(dummy_preprocessor.get_feature_names_out())
+    }
 
-        yield client
+    with patch.object(predictor, "compute_shap", return_value=_mock_shap):
+        with TestClient(app) as client:
+            # Lifespan has run — inject dummy artifacts into the singleton
+            predictor._model = dummy_model
+            predictor._preprocessor = dummy_preprocessor
+            predictor._is_ready = True
+            predictor._model_version = "dummy_v1"
+
+            yield client
 
     # Reset to default state after each test
     predictor._model = None

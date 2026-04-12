@@ -123,10 +123,10 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 - [x] Task 3.2.2 — prediction.py: result rendering (result_card + shap_chart)
 
 ### Step 4 — Batch Prediction Page
-- [ ] Task 4.1.1 — batch_prediction.py: file uploader
-- [ ] Task 4.1.2 — batch_prediction.py: CSV preview and template download
-- [ ] Task 4.2.1 — batch_prediction.py: run batch prediction button
-- [ ] Task 4.2.2 — batch_prediction.py: results table with color highlight and download
+- [x] Task 4.1.1 — batch_prediction.py: file uploader
+- [x] Task 4.1.2 — batch_prediction.py: CSV preview and template download
+- [x] Task 4.2.1 — batch_prediction.py: run batch prediction button
+- [x] Task 4.2.2 — batch_prediction.py: results table with color highlight and download
 
 ### Step 5 — Analytics Page
 - [ ] Task 5.1.1 — analytics.py: model status section

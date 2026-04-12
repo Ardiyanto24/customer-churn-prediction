@@ -108,8 +108,8 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 - [ ] Task 1.1.1 — api_client.py: check_health function
 - [ ] Task 1.1.2 — api_client.py: predict_single function
 - [ ] Task 1.1.3 — api_client.py: predict_batch_json and predict_batch_csv functions
-- [ ] Task 1.2.1 — result_card.py: render_result_card component
-- [ ] Task 1.3.1 — shap_chart.py: render_shap_bar_chart component
+- [x] Task 1.2.1 — result_card.py: render_result_card component
+- [x] Task 1.3.1 — shap_chart.py: render_shap_bar_chart component
 
 ### Step 2 — Entry Point
 - [ ] Task 2.1.1 — app/main.py: st.set_page_config

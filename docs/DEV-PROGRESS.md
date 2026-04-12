@@ -105,9 +105,9 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 ## DEV-03: Streamlit UI
 
 ### Step 1 — Shared Components
-- [ ] Task 1.1.1 — api_client.py: check_health function
-- [ ] Task 1.1.2 — api_client.py: predict_single function
-- [ ] Task 1.1.3 — api_client.py: predict_batch_json and predict_batch_csv functions
+- [x] Task 1.1.1 — api_client.py: check_health function
+- [x] Task 1.1.2 — api_client.py: predict_single function
+- [x] Task 1.1.3 — api_client.py: predict_batch_json and predict_batch_csv functions
 - [x] Task 1.2.1 — result_card.py: render_result_card component
 - [x] Task 1.3.1 — shap_chart.py: render_shap_bar_chart component
 

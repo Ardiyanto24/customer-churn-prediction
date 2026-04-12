@@ -141,12 +141,12 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 ## DEV-04: Testing Suite
 
 ### Step 1 — pytest Config and Shared Fixtures
-- [ ] Task 1.1.1 — create pytest.ini with markers and addopts
-- [ ] Task 1.2.1 — conftest.py: sample_raw_row fixture
-- [ ] Task 1.2.2 — conftest.py: sample_raw_df fixture (20 rows, realistic variation)
-- [ ] Task 1.2.3 — conftest.py: dummy_preprocessor fixture (session scope)
-- [ ] Task 1.2.4 — conftest.py: dummy_model fixture (LogisticRegression on synthetic data)
-- [ ] Task 1.2.5 — conftest.py: api_client fixture (TestClient with injected dummy model)
+- [x] Task 1.1.1 — create pytest.ini with markers and addopts
+- [x] Task 1.2.1 — conftest.py: sample_raw_row fixture
+- [x] Task 1.2.2 — conftest.py: sample_raw_df fixture (20 rows, realistic variation)
+- [x] Task 1.2.3 — conftest.py: dummy_preprocessor fixture (session scope)
+- [x] Task 1.2.4 — conftest.py: dummy_model fixture (LogisticRegression on synthetic data)
+- [x] Task 1.2.5 — conftest.py: api_client fixture (TestClient with injected dummy model)
 
 ### Step 2 — Unit Test: Preprocessing
 - [ ] Task 2.1.1 — TestStructuralEncoder (no_internet vs no, no_phone vs no, fit-only)

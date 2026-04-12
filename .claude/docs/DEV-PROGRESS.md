@@ -20,7 +20,7 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 | Phase | Steps | Status |
 |---|---|---|
 | DEV-01 | 4 steps | ✅ Complete (manual) |
-| DEV-02 | 4 steps | ⬜ Not started |
+| DEV-02 | 4 steps | ✅ Complete (manual) |
 | DEV-03 | 5 steps | ⬜ Not started |
 | DEV-04 | 5 steps | ⬜ Not started |
 | DEV-05 | 3 steps | ⬜ Not started |
@@ -68,34 +68,35 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 ---
 
 ## DEV-02: FastAPI Service
+> Dikerjakan secara manual. Semua task selesai.
 
 ### Step 1 — Shared Utilities
-- [ ] Task 1.1.1 — implement get_logger (StreamHandler + FileHandler, LOG_LEVEL env)
-- [ ] Task 1.2.1 — implement save_artifact and load_artifact
+- [x] Task 1.1.1 — implement get_logger (StreamHandler + FileHandler, LOG_LEVEL env)
+- [x] Task 1.2.1 — implement save_artifact and load_artifact
 
 ### Step 2 — Pydantic Schemas
-- [ ] Task 2.1.1 — CustomerInput schema (20 fields, constraints, example, docstring)
-- [ ] Task 2.2.1 — PredictionResult schema (churn_prediction, probability, risk_level, shap_values)
-- [ ] Task 2.2.2 — PredictionResponse, BatchPredictionItem, BatchPredictionResponse
-- [ ] Task 2.2.3 — HealthResponse schema
+- [x] Task 2.1.1 — CustomerInput schema (20 fields, constraints, example, docstring)
+- [x] Task 2.2.1 — PredictionResult schema (churn_prediction, probability, risk_level, shap_values)
+- [x] Task 2.2.2 — PredictionResponse, BatchPredictionItem, BatchPredictionResponse
+- [x] Task 2.2.3 — HealthResponse schema
 
 ### Step 3 — Predictor
-- [ ] Task 3.1.1 — ModelPredictor class with load_artifacts method
-- [ ] Task 3.1.2 — _prepare_dataframe method
-- [ ] Task 3.2.1 — predict method (single inference)
-- [ ] Task 3.2.2 — predict_batch method (batch inference)
-- [ ] Task 3.3.1 — compute_shap method (with VotingClassifier surrogate handling)
-- [ ] Task 3.3.2 — predictor singleton instance
+- [x] Task 3.1.1 — ModelPredictor class with load_artifacts method
+- [x] Task 3.1.2 — _prepare_dataframe method
+- [x] Task 3.2.1 — predict method (single inference)
+- [x] Task 3.2.2 — predict_batch method (batch inference)
+- [x] Task 3.3.1 — compute_shap method (with VotingClassifier surrogate handling)
+- [x] Task 3.3.2 — predictor singleton instance
 
 ### Step 4 — FastAPI Application
-- [ ] Task 4.1.1 — app initialization, lifespan context manager
-- [ ] Task 4.1.2 — CORS middleware and global exception handler
-- [ ] Task 4.2.1 — GET /health endpoint
-- [ ] Task 4.3.1 — POST /predict endpoint
-- [ ] Task 4.3.2 — POST /predict/batch endpoint
-- [ ] Task 4.3.3 — POST /predict/batch-csv endpoint
-- [ ] Task 4.4.1 — GET / root endpoint
-- [ ] Task 4.4.2 — uvicorn entrypoint block
+- [x] Task 4.1.1 — app initialization, lifespan context manager
+- [x] Task 4.1.2 — CORS middleware and global exception handler
+- [x] Task 4.2.1 — GET /health endpoint
+- [x] Task 4.3.1 — POST /predict endpoint
+- [x] Task 4.3.2 — POST /predict/batch endpoint
+- [x] Task 4.3.3 — POST /predict/batch-csv endpoint
+- [x] Task 4.4.1 — GET / root endpoint
+- [x] Task 4.4.2 — uvicorn entrypoint block
 
 > Verification tasks (Step 5) are run manually — not tracked here.
 

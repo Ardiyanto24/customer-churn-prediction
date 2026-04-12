@@ -133,3 +133,69 @@ class TestXAIValidatorPass:
         assert result is True, (
             "Validator should match OHE-expanded names via prefix matching"
         )
+
+
+# ---------------------------------------------------------------------------
+# Task 4.1.3 — TestXAIValidatorFail
+# ---------------------------------------------------------------------------
+
+class TestXAIValidatorFail:
+    """Tests for scenarios where the XAI quality gate should return False."""
+
+    def test_model_fails_when_no_expected_features_in_top_n(self):
+        """
+        When none of the EXPECTED_IMPORTANT_FEATURES appear in the top-N,
+        the gate must fail. This catches a model that learned irrelevant signals.
+        """
+        # All 10 top slots filled with non-domain features
+        non_domain_features = [f"noise_feat_{i}" for i in range(1, 11)]
+        # Expected features get low importance
+        shap_values = build_mock_shap_values(
+            top_features=non_domain_features,
+            other_features=settings.EXPECTED_IMPORTANT_FEATURES,
+        )
+
+        result = validate_xai(shap_values)
+
+        assert result is False
+
+    def test_model_fails_below_minimum_overlap(self):
+        """
+        With only 2 of 5 expected features in top-10 (overlap = 2/5 = 0.4 <
+        XAI_MIN_OVERLAP = 0.5), the gate must fail.
+        """
+        expected = settings.EXPECTED_IMPORTANT_FEATURES  # 5 features
+
+        # 2 expected in top, 3 expected with low importance
+        top_features = expected[:2] + [
+            "noise_1", "noise_2", "noise_3",
+            "noise_4", "noise_5", "noise_6", "noise_7", "noise_8",
+        ]
+        other_features = expected[2:]  # 3 expected features with low importance
+        shap_values = build_mock_shap_values(top_features, other_features)
+
+        result = validate_xai(shap_values)
+
+        assert result is False
+
+    def test_validator_logs_missing_features_when_gate_fails(self, caplog):
+        """
+        When the gate fails, the validator must emit a WARNING-level log that
+        identifies which expected features were absent from the top-N.
+        This allows pipeline operators to diagnose model quality issues.
+        """
+        # None of the expected features in top-10
+        non_domain_features = [f"noise_{i}" for i in range(1, 11)]
+        shap_values = build_mock_shap_values(
+            top_features=non_domain_features,
+            other_features=settings.EXPECTED_IMPORTANT_FEATURES,
+        )
+
+        with caplog.at_level(logging.WARNING, logger="src.xai.xai_validator"):
+            result = validate_xai(shap_values)
+
+        assert result is False
+        warning_messages = [r.message for r in caplog.records if r.levelno >= logging.WARNING]
+        assert any("XAI gate FAILED" in msg for msg in warning_messages), (
+            f"Expected 'XAI gate FAILED' in warning logs. Got: {warning_messages}"
+        )

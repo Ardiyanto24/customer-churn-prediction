@@ -1,0 +1,51 @@
+# ─────────────────────────────────────────────
+# .dockerignore — TCCP Customer Churn Prediction
+# Applies to all docker build commands in this directory.
+# Keep models/artifacts/ included — bundled into API image.
+# ─────────────────────────────────────────────
+
+# Development artifacts
+.git/
+.gitignore
+.env
+*.pyc
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+
+# Data directories — used only during training, not inference
+data/raw/
+data/processed/
+data/splits/
+
+# Notebooks and documentation
+notebooks/
+reports/
+*.md
+
+# Dev and convenience requirements — not used in Dockerfiles
+requirements-dev.txt
+requirements.txt
+
+# Local tooling and config
+pytest.ini
+pyproject.toml
+wandb/
+logs/
+
+# Virtual environments
+myvenv/
+venv/
+.venv/
+
+# IDE and OS artifacts
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# Test files
+tests/
+test_load.py

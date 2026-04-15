@@ -1,0 +1,14 @@
+[server]
+# Required for deployment — prevents Streamlit from opening a browser window.
+headless = true
+# CORS is handled by the FastAPI service; disable here to avoid double-handling.
+enableCORS = false
+# Disabled for compatibility with HF Spaces iframe embedding.
+enableXsrfProtection = false
+
+[browser]
+# Disable usage telemetry for privacy and faster startup.
+gatherUsageStats = false
+
+[theme]
+base = "light"

@@ -1,0 +1,74 @@
+# Dockerfile.ui
+# Streamlit UI service — Space 2 on Hugging Face Spaces (tccp-ui).
+# Communicates with the API service via HTTP; never loads model directly.
+
+# ─────────────────────────────────────────────
+# Stage: Base + ENV
+# ─────────────────────────────────────────────
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Prevent .pyc files, force unbuffered logs, make config/src/app importable.
+# STREAMLIT_SERVER_PORT and STREAMLIT_SERVER_ADDRESS configure the server
+# via environment (preferred over CLI flags).
+# API_BASE_URL defaults to localhost — override via docker run -e or HF Spaces Settings.
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+    STREAMLIT_SERVER_PORT=7860 \
+    STREAMLIT_SERVER_ADDRESS=0.0.0.0 \
+    API_BASE_URL=http://localhost:7860
+
+# ─────────────────────────────────────────────
+# Task 3.1.2 — System dependencies
+# UI service does not perform inference, so no LightGBM/libgomp1 needed.
+# libglib2.0-0 : required by some numerical libraries (used by analytics page)
+# curl          : required for HEALTHCHECK
+# ─────────────────────────────────────────────
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libglib2.0-0 \
+        curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# ─────────────────────────────────────────────
+# Task 3.1.3 — Python dependencies
+# Copy requirements first to leverage Docker layer caching.
+# requirements-ui.txt includes -r requirements-base.txt (shap, scikit-learn, etc.)
+# needed for the analytics page SHAP visualizations.
+# ─────────────────────────────────────────────
+COPY requirements-base.txt requirements-ui.txt ./
+RUN pip install --no-cache-dir -r requirements-ui.txt
+
+# ─────────────────────────────────────────────
+# Task 3.2.1 — Source code (selective copy)
+# Only src/utils/ is needed — no training or XAI modules.
+# reports/xai_report/ contains static SHAP plots for the analytics page.
+# mkdir ensures the directory always exists even if COPY brings no files.
+# ─────────────────────────────────────────────
+COPY config/ ./config/
+COPY src/utils/ ./src/utils/
+COPY app/ ./app/
+RUN mkdir -p reports/xai_report
+COPY reports/xai_report/ ./reports/xai_report/
+
+# ─────────────────────────────────────────────
+# Task 3.2.2 — Streamlit config
+# .streamlit/config.toml is read automatically by Streamlit at startup.
+# ─────────────────────────────────────────────
+COPY .streamlit/ ./.streamlit/
+
+# ─────────────────────────────────────────────
+# Task 3.3.1 — Port, health check, and entrypoint
+# HF Spaces requires port 7860 (set via STREAMLIT_SERVER_PORT above).
+# Streamlit exposes /_stcore/health built-in when running.
+# CMD uses JSON array form for proper SIGTERM handling (graceful shutdown).
+# ─────────────────────────────────────────────
+EXPOSE 7860
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl --fail http://localhost:7860/_stcore/health || exit 1
+
+CMD ["streamlit", "run", "app/main.py"]

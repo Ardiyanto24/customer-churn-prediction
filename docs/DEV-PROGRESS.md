@@ -23,7 +23,7 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 | DEV-02 | 4 steps | ✅ Complete (manual) |
 | DEV-03 | 5 steps | ✅ Complete |
 | DEV-04 | 6 steps | ✅ Complete |
-| DEV-05 | 3 steps | ⬜ Not started |
+| DEV-05 | 3 steps | ✅ Complete |
 | DEV-06 | 5 steps | ⬜ Not started |
 | DEV-07 | 3 steps | ⬜ Not started |
 | DEV-08 | 9 steps | ⬜ Not started |
@@ -195,12 +195,12 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 - [x] Task 2.3.2 — CMD (uvicorn entrypoint)
 
 ### Step 3 — Dockerfile.ui
-- [ ] Task 3.1.1 — base image, WORKDIR, ENV
-- [ ] Task 3.1.2 — system dependencies
-- [ ] Task 3.1.3 — Python dependencies layer (requirements-base + requirements-ui)
-- [ ] Task 3.2.1 — source code COPY (config/, src/utils/, app/, reports/xai_report/)
-- [ ] Task 3.2.2 — .streamlit/config.toml for server port and address
-- [ ] Task 3.3.1 — EXPOSE 7860, HEALTHCHECK, CMD (streamlit run)
+- [x] Task 3.1.1 — base image, WORKDIR, ENV
+- [x] Task 3.1.2 — system dependencies
+- [x] Task 3.1.3 — Python dependencies layer (requirements-base + requirements-ui)
+- [x] Task 3.2.1 — source code COPY (config/, src/utils/, app/, reports/xai_report/)
+- [x] Task 3.2.2 — .streamlit/config.toml for server port and address
+- [x] Task 3.3.1 — EXPOSE 7860, HEALTHCHECK, CMD (streamlit run)
 
 > Verification tasks (Step 4, Step 5) are run manually — not tracked here.
 

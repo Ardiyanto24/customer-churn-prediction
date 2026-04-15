@@ -183,7 +183,7 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 ## DEV-05: Dockerization
 
 ### Step 1 — .dockerignore
-- [ ] Task 1.1.1 — create .dockerignore (dev artifacts, data, notebooks, dev requirements)
+- [x] Task 1.1.1 — create .dockerignore (dev artifacts, data, notebooks, dev requirements)
 
 ### Step 2 — Dockerfile.api
 - [ ] Task 2.1.1 — base image, WORKDIR, ENV (PYTHONDONTWRITEBYTECODE, PYTHONUNBUFFERED, PYTHONPATH)

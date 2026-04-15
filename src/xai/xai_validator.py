@@ -51,7 +51,11 @@ def validate_xai(
         ``True`` if the fraction of expected features found in top-N is ≥
         ``min_overlap``; ``False`` otherwise.
     """
-    expected = expected_features if expected_features is not None else settings.EXPECTED_IMPORTANT_FEATURES
+    expected = (
+        expected_features
+        if expected_features is not None
+        else settings.EXPECTED_IMPORTANT_FEATURES
+    )
     n = top_n if top_n is not None else settings.XAI_TOP_N_FEATURES
     threshold = min_overlap if min_overlap is not None else settings.XAI_MIN_OVERLAP
 

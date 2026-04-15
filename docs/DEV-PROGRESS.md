@@ -186,13 +186,13 @@ Sebelum memulai DEV-02, verifikasi struktur sudah benar dengan:
 - [x] Task 1.1.1 — create .dockerignore (dev artifacts, data, notebooks, dev requirements)
 
 ### Step 2 — Dockerfile.api
-- [ ] Task 2.1.1 — base image, WORKDIR, ENV (PYTHONDONTWRITEBYTECODE, PYTHONUNBUFFERED, PYTHONPATH)
-- [ ] Task 2.1.2 — system dependencies (libgomp1, libglib2.0-0, curl)
-- [ ] Task 2.1.3 — Python dependencies layer (requirements-base + requirements-api)
-- [ ] Task 2.2.1 — source code COPY (config/, src/, api/)
-- [ ] Task 2.2.2 — model artifacts COPY (models/artifacts/)
-- [ ] Task 2.3.1 — EXPOSE 7860, HEALTHCHECK, ENV API_PORT=7860
-- [ ] Task 2.3.2 — CMD (uvicorn entrypoint)
+- [x] Task 2.1.1 — base image, WORKDIR, ENV (PYTHONDONTWRITEBYTECODE, PYTHONUNBUFFERED, PYTHONPATH)
+- [x] Task 2.1.2 — system dependencies (libgomp1, libglib2.0-0, curl)
+- [x] Task 2.1.3 — Python dependencies layer (requirements-base + requirements-api)
+- [x] Task 2.2.1 — source code COPY (config/, src/, api/)
+- [x] Task 2.2.2 — model artifacts COPY (models/artifacts/)
+- [x] Task 2.3.1 — EXPOSE 7860, HEALTHCHECK, ENV API_PORT=7860
+- [x] Task 2.3.2 — CMD (uvicorn entrypoint)
 
 ### Step 3 — Dockerfile.ui
 - [ ] Task 3.1.1 — base image, WORKDIR, ENV

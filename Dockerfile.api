@@ -1,0 +1,77 @@
+# Dockerfile.api
+# FastAPI inference service — Space 1 on Hugging Face Spaces (tccp-api).
+# Exposes the /predict, /predict/batch, /predict/batch-csv, and /health endpoints.
+
+# ─────────────────────────────────────────────
+# Stage: Base + ENV
+# ─────────────────────────────────────────────
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Prevent .pyc files inside the container, force unbuffered log output,
+# and make config/src/api importable without path prefix.
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
+
+# ─────────────────────────────────────────────
+# Task 2.1.2 — System dependencies
+# libgomp1  : required by LightGBM (OpenMP)
+# libglib2.0-0 : required by some numerical libraries
+# curl      : required for HEALTHCHECK
+# ─────────────────────────────────────────────
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libgomp1 \
+        libglib2.0-0 \
+        curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# ─────────────────────────────────────────────
+# Task 2.1.3 — Python dependencies
+# Copy requirements first to leverage Docker layer caching:
+# this layer is only rebuilt when requirements files change,
+# not on every source code change.
+# ─────────────────────────────────────────────
+COPY requirements-base.txt requirements-api.txt ./
+RUN pip install --no-cache-dir -r requirements-api.txt
+
+# ─────────────────────────────────────────────
+# Task 2.2.1 — Source code (selective copy)
+# ─────────────────────────────────────────────
+COPY config/ ./config/
+COPY src/ ./src/
+COPY api/ ./api/
+
+# ─────────────────────────────────────────────
+# Task 2.2.2 — Model artifacts
+# Artifacts are bundled into the image for HF Spaces free-tier deployment,
+# which does not support persistent volume mounts.
+# In a production environment with proper infrastructure, artifacts should be
+# pulled from the model registry (WandB artifact) at container startup rather
+# than being bundled into the image.
+# ─────────────────────────────────────────────
+COPY models/artifacts/ ./models/artifacts/
+
+# ─────────────────────────────────────────────
+# Task 2.3.1 — Port, runtime env, and health check
+# HF Spaces requires the application to listen on port 7860.
+# API_PORT and API_HOST override the defaults in config/settings.py.
+# ─────────────────────────────────────────────
+EXPOSE 7860
+
+ENV API_PORT=7860 \
+    API_HOST=0.0.0.0
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl --fail http://localhost:7860/health || exit 1
+
+# ─────────────────────────────────────────────
+# Task 2.3.2 — Entrypoint
+# --workers 1 : HF Spaces free tier has limited memory;
+#               multiple workers would multiply model-load memory usage.
+# JSON array form ensures SIGTERM goes directly to uvicorn (graceful shutdown).
+# ─────────────────────────────────────────────
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "7860", "--workers", "1"]
